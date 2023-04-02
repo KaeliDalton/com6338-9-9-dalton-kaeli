@@ -55,8 +55,7 @@ const {
     sys: {country}, 
     coord: {lat,lon},
     weather: [
-        {icon},
-        {description}
+        {icon, description}
     ],
     main: {temp, feels_like},
     dt
