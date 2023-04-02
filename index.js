@@ -1,14 +1,14 @@
 
 /*Needs
-Convert a 'var' to a 'const' or 'let'(converted all)
+DONEConvert a 'var' to a 'const' or 'let'(converted all)
 
 convert a promise based ('.then') to 'asynch' or 'await'
 
-convert a 'function' to an 'arrow function' (set final function of displayData to an arrow function)
+DONEconvert a 'function' to an 'arrow function' (set final function of displayData to an arrow function)
 
-convert string concatenation into template literals and string interpolation (template literals done no idea what a string interpolation is)
+DONEconvert string concatenation into template literals and string interpolation (template literals done using string interpolation)
 
-convert some 'object-related code' into 'ES6 destructuring' (did a couple surrounding data: name, country, lat, lon, weather, main, dt)
+DONEconvert some 'object-related code' into 'ES6 destructuring' (did a couple surrounding data: name, country, lat, lon, weather, main, dt)
 */
 // Global Constants
 const API = "2df62c30dae6653493ac68c2bd19af8b"
@@ -17,7 +17,7 @@ const form = document.querySelector('form')
 const search = document.getElementById('weather-search')
 
 //main function
-form.onsubmit = function (e) { //turn asynch??
+form.onsubmit = async function (e) {
     e.preventDefault()
     const URL = "https://api.openweathermap.org/data/2.5/weather?q="
     let city = this.search.value.trim()
@@ -28,81 +28,74 @@ form.onsubmit = function (e) { //turn asynch??
         weather.innerHTML = ''
         search.value = ''
     }
-     return fetch(usedURL)
-//location not found
-        .then(function (res) {
-            if (res.status !== 200) 
-            throw new Error('Location not Found')
-            return res.json()
-        })
-        //display location information
-        .then(displayData)
-        //catch errors
-        .catch(function (err) {
-            weather.innerHTML = err.message
-        })
-}
-
-//turn a function (displayData) into an arrow function
-const displayData = (data) => {
-    city = ""
-    weather.innerHTML = ""
-    search.value = ''
+    try{
+        const res = await fetch(usedURL)
+        if(res.status !== 200)
+       throw new Error('Location Not Found')
+       const data = await res.json()
+       displayData(data)}
+       catch(err){
+           weather.innerHTML = err.message
+       }
+   }
+function displayData(data) {
+        city = ""
+        weather.innerHTML = ""
+        search.value = ''
 //show city
-const location = document.createElement('h2')
-const {
-    name, 
-    sys: {country}, 
-    coord: {lat,lon},
-    weather: [
-        {icon, description}
-    ],
-    main: {temp, feels_like},
-    dt
-} = data
-weather.appendChild(location)
-location.textContent = `${name}, ${country}`
+    const location = document.createElement('h2')
+    const {
+        name, 
+        sys: {country}, 
+        coord: {lat,lon},
+        weather: [
+            {icon, description}
+        ],
+        main: {temp, feels_like},
+        dt } = data
+    weather.appendChild(location)
+    location.textContent = `${name}, ${country}`
 
 //show map link
-const mapLink = document.createElement('a')
-const googleMap = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`
-weather.appendChild(mapLink)
-mapLink.textContent = "Click to View Map"
-mapLink.href = googleMap
-mapLink.target = "_BLANK"
+    const mapLink = document.createElement('a')
+    const googleMap = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`
+    weather.appendChild(mapLink)
+    mapLink.textContent = "Click to View Map"
+    mapLink.href = googleMap
+    mapLink.target = "_BLANK"
 
 //show weather condition icon
-const iconEl = document.createElement('img')
-const iconCode = icon
-const iconURL = `https://openweathermap.org/img/wn/${iconCode}@2x.png`
-iconEl.src = iconURL
-iconEl.alt = data.name
-weather.appendChild(iconEl)
+    const iconEl = document.createElement('img')
+    const iconCode = icon
+    const iconURL = `https://openweathermap.org/img/wn/${iconCode}@2x.png`
+    iconEl.src = iconURL
+    iconEl.alt = data.name
+    weather.appendChild(iconEl)
 
 //show weather condition
-const condition = document.createElement('p')
-condition.setAttribute('style', 'text-transform: capitalize')
-condition.textContent = description
-weather.appendChild(condition)
+    const condition = document.createElement('p')
+    condition.setAttribute('style', 'text-transform: capitalize')
+    condition.textContent = description
+    weather.appendChild(condition)
 //show current temperature
-const temperature = document.createElement('p')
-const temperatureNumber = temp
-temperature.textContent = `Current: ${temperatureNumber}° F`
-weather.appendChild(temperature)
+    const temperature = document.createElement('p')
+    const temperatureNumber = temp
+    temperature.textContent = `Current: ${temperatureNumber}° F`
+    weather.appendChild(temperature)
 
 //show feels like temperature
-const feelsLike = document.createElement('p')
-const feelsLikeTemp = feels_like
-feelsLike.textContent = `Feels like: ${feelsLikeTemp}° F`
-weather.appendChild(feelsLike)
+    const feelsLike = document.createElement('p')
+    const feelsLikeTemp = feels_like
+    feelsLike.textContent = `Feels like: ${feelsLikeTemp}° F`
+    weather.appendChild(feelsLike)
 
 //show time updated
-const dateTime = document.createElement('p')
-const date = new Date((dt) * 1000)
-const time = date.toLocaleTimeString('en-US', {
-    hour: 'numeric', 
-    minute: '2-digit'
-})
+    const dateTime = document.createElement('p')
+    const date = new Date((dt) * 1000)
+    const time = date.toLocaleTimeString('en-US', {
+        hour: 'numeric', 
+        minute: '2-digit'
+    })
 dateTime.textContent = `Last Updated: ${time}`
 weather.appendChild(dateTime)
 }
