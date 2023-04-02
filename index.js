@@ -8,7 +8,7 @@ convert a 'function' to an 'arrow function' (set final function of displayData t
 
 convert string concatenation into template literals and string interpolation (template literals done no idea what a string interpolation is)
 
-convert some 'object-related code' into 'ES6 destructuring'
+convert some 'object-related code' into 'ES6 destructuring' (did a couple surrounding data: name, country, lat, lon)
 */
 // Global Constants
 const API = "2df62c30dae6653493ac68c2bd19af8b"
@@ -50,13 +50,12 @@ const displayData = (data) => {
     search.value = ''
 //show city
 const location = document.createElement('h2')
+const {name, sys: {country}, coord: {lat,lon}} = data
 weather.appendChild(location)
-location.textContent = data.name + " , " + data.sys.country
+location.textContent = `${name}, ${country}`
 
 //show map link
 const mapLink = document.createElement('a')
-const lat = data.coord.lat
-const lon = data.coord.lon
 const googleMap = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`
 weather.appendChild(mapLink)
 mapLink.textContent = "Click to View Map"
