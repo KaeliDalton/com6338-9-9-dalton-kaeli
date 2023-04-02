@@ -8,7 +8,7 @@ convert a 'function' to an 'arrow function' (set final function of displayData t
 
 convert string concatenation into template literals and string interpolation (template literals done no idea what a string interpolation is)
 
-convert some 'object-related code' into 'ES6 destructuring' (did a couple surrounding data: name, country, lat, lon)
+convert some 'object-related code' into 'ES6 destructuring' (did a couple surrounding data: name, country, lat, lon, weather, main, dt)
 */
 // Global Constants
 const API = "2df62c30dae6653493ac68c2bd19af8b"
@@ -50,7 +50,17 @@ const displayData = (data) => {
     search.value = ''
 //show city
 const location = document.createElement('h2')
-const {name, sys: {country}, coord: {lat,lon}} = data
+const {
+    name, 
+    sys: {country}, 
+    coord: {lat,lon},
+    weather: [
+        {icon},
+        {description}
+    ],
+    main: {temp, feels_like},
+    dt
+} = data
 weather.appendChild(location)
 location.textContent = `${name}, ${country}`
 
@@ -63,33 +73,33 @@ mapLink.href = googleMap
 mapLink.target = "_BLANK"
 
 //show weather condition icon
-const icon = document.createElement('img')
-const iconCode = data.weather[0].icon
+const iconEl = document.createElement('img')
+const iconCode = icon
 const iconURL = `https://openweathermap.org/img/wn/${iconCode}@2x.png`
-icon.src = iconURL
-icon.alt = data.name
-weather.appendChild(icon)
+iconEl.src = iconURL
+iconEl.alt = data.name
+weather.appendChild(iconEl)
 
 //show weather condition
 const condition = document.createElement('p')
 condition.setAttribute('style', 'text-transform: capitalize')
-condition.textContent = data.weather[0].description
+condition.textContent = description
 weather.appendChild(condition)
 //show current temperature
 const temperature = document.createElement('p')
-const temperatureNumber = data.main.temp
+const temperatureNumber = temp
 temperature.textContent = `Current: ${temperatureNumber}° F`
 weather.appendChild(temperature)
 
 //show feels like temperature
 const feelsLike = document.createElement('p')
-const feelsLikeTemp = data.main.feels_like
+const feelsLikeTemp = feels_like
 feelsLike.textContent = `Feels like: ${feelsLikeTemp}° F`
 weather.appendChild(feelsLike)
 
 //show time updated
 const dateTime = document.createElement('p')
-const date = new Date((data.dt) * 1000)
+const date = new Date((dt) * 1000)
 const time = date.toLocaleTimeString('en-US', {
     hour: 'numeric', 
     minute: '2-digit'
